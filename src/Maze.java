@@ -1,18 +1,25 @@
 import java.util.ArrayList;
+import java.util.List;
 
-public class Maze {
+public class Maze implements Model {
     /** Constants **/
     public static final int MAX_PLAYERS = 1;
+    public static final char PLAYER = 'P';
+    public static final char WALL = 'W';
+    public static final char GOAL = 'G';
 
-    /** private member variables **/
-    private char[][] board;
+    /** Private member variables **/
+    private final char[][] board;
     private int col;
     private int row;
 
-    private final ArrayList<Character> goal;
     private final char player;
+    private int playerY;
+    private int playerX;
 
     private int numPlayers;
+
+    private final List<View> views;
 
     /** Constructors **/
 
@@ -22,7 +29,6 @@ public class Maze {
      * @param row = number of rows in maze
      */
     public Maze (int col, int row) {
-        goal = new ArrayList<Character>();
         player = 'P';
 
         numPlayers = 0;
@@ -35,6 +41,7 @@ public class Maze {
                 board[i][j] = ' ';
             }
         }
+        views = new ArrayList<View>();
     }
 
     /** Accessor functions **/
@@ -53,6 +60,22 @@ public class Maze {
      */
     public int getCol() {
         return col;
+    }
+
+    /**  Returns player's x coordinate.
+     *
+     * @return playerX = player's x coordinate
+     */
+    public int getPlayerX() {
+        return playerX;
+    }
+
+    /** Returns player's y coordinate.
+     *
+     * @return playerY = player's y coordinate
+     */
+    public int getPlayerY() {
+        return playerY;
     }
 
     /** Returns the number of rows.
@@ -84,11 +107,14 @@ public class Maze {
      */
     public void initPlayer(int y, int x) {
         assert (numPlayers < 0 || numPlayers > MAX_PLAYERS) :
-        "initPlayer(): numPlayers can't be < 0 and can't be > MAX_PLAYERS";
+        "initPlayer(): numPlayers < 0 and numPlayers > MAX_PLAYERS" +
+        " should be impossible if program is running correctly.";
 
         if (numPlayers == 0) {
             numPlayers ++;
             initPiece('P', y, x);
+            playerY = y;
+            playerX = x;
         } else if (numPlayers == MAX_PLAYERS) {
             throw new IllegalArgumentException(
             "initPlayer(): You may only have " + MAX_PLAYERS + " player on the board.");
@@ -104,6 +130,46 @@ public class Maze {
         initPiece('W', y, x);
     }
 
+    /** Decrements the player's y position by one.
+     *
+     */
+    public void moveDown() {
+        board[playerY + 1][playerX] = 'P';
+        board[playerY][playerX] = ' ';
+        playerY ++;
+        notifyAllViews();
+    }
+
+    /** Decrements the player's x position by one.
+     *
+     */
+    public void moveLeft() {
+        board[playerY][playerX - 1] = 'P';
+        board[playerY][playerX] = ' ';
+        playerX --;
+        notifyAllViews();
+    }
+
+    /** Increments the player's x position by one.
+     *
+     */
+    public void moveRight() {
+        board[playerY][playerX + 1] = 'P';
+        board[playerY][playerX] = ' ';
+        playerX ++;
+        notifyAllViews();
+    }
+
+    /** Increments the player's y position by one.
+     *
+     */
+    public void moveUp() {
+        board[playerY - 1][playerX] = 'P';
+        board[playerY][playerX] = ' ';
+        playerY --;
+        notifyAllViews();
+    }
+
     /** Helper functions **/
 
     /** Initializes piece's location on the board.
@@ -113,11 +179,34 @@ public class Maze {
     private void initPiece(char symbol, int y, int x) {
         if (y < 0 || y > col - 1 || x < 0 || x > row - 1) {
             throw new IllegalArgumentException(
-                    "initPlayer(): 0 <= x < row and 0 <= y < col required.");
+            "initPlayer(): 0 <= x < row and 0 <= y < col required.");
         } else if(board[y][x] != ' ') {
             throw new IllegalArgumentException(
             "initPlayer(): Location y = " + y + " x = " + x + " is occupied.");
         }
         board[y][x] = symbol;
+        notifyAllViews();
+    }
+
+    /** Interface functions **/
+
+    @Override
+    public void notifyAllViews() {
+        System.out.println("Notifying all views of changes");
+        for(View view : views) {
+            view.update();
+        }
+    }
+
+    @Override
+    public void registerView(View view) {
+        System.out.println("registerView() successful");
+        views.add(view);
+    }
+
+    @Override
+    public void removeView(View view) {
+        System.out.println("removeView() successful.");
+        views.remove(view);
     }
 }
