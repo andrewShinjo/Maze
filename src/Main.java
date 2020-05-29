@@ -1,12 +1,13 @@
 public class Main {
     public static void main(String[] argc) {
-        test();
+        new ExecWithConsole();
+
     }
 
 
     public static void test() {
-        int col = 10;
-        int row = 10;
+//        int col = 10;
+//        int row = 10;
         /*
         Maze maze = new Maze (col, row);
         ConsoleView consoleView = new ConsoleView(maze);
@@ -22,9 +23,8 @@ public class Main {
         consoleView.displayView();
         maze.initWall(8, 0);
         */
-        Maze maze = new Maze(10, 10);
-        ConsoleView consoleView = new ConsoleView(maze);
-        ConsoleController consoleController = new ConsoleController(maze, consoleView);
+//        Maze maze = new Maze(10, 10);
+//        MazeController consoleController = new MazeController(maze);
 //        String a = "U";
 //        String b = "D";
 //        String c = "L";
@@ -102,8 +102,12 @@ public class Main {
 //        consoleController.getMaze().moveLeft();
 //        consoleController.getConsoleView().displayView();
 
-        consoleController.getMaze().initPlayer(1,1);
-        consoleController.readAction();
+//        consoleController.getMaze().initPlayer(1,1);
+//        consoleController.getMaze().initGoal(9, 9);
+//        while (! consoleController.getMaze().getGoalReached()) {
+//            consoleController.readAction();
+//        }
+
     }
     /** TODO
      * 5/25/20
@@ -112,7 +116,7 @@ public class Main {
      * [DONE] Add goal to board
      * [DONE] Add wall to board
      * 5/27/20
-     * [DOME] Move player via keyboard input
+     * [DONE] Move player via keyboard input
      *      [DONE] Read String input from Scanner object
      *      [DONE] Validate if input is allowed
      *      [DONE] Check if illegal collision is detected
@@ -121,5 +125,10 @@ public class Main {
      *      [DONE] Check for collision with goal
      *      [DONE] Update position of player
      *      [DONE] Update ConsoleView with new position
+     * 5/28/20
+     * [DONE] Make code run until player reaches the goal
+     * [DONE] Add a menu in console
+     * Create map editor
+     * Create map selection menu
      */
 }

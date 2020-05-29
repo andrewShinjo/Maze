@@ -1,5 +1,6 @@
 public class ConsoleView implements View {
     /** Private member variables **/
+    private MazeController mazeController;
     private Maze maze;
 
     /** Constructors **/
@@ -7,13 +8,16 @@ public class ConsoleView implements View {
     /** Constructor for ConsoleView. ConsoleView uses Maze object
      *  to know what to display onto the console.
      *
+     * @param mazeController = the controller
      * @param maze = the maze
      */
-    public ConsoleView(Maze maze) {
+    public ConsoleView(MazeController mazeController, Maze maze) {
+        this.mazeController = mazeController;
         this.maze = maze;
+        maze.registerView(this);
     }
 
-    /** Additional functions **/
+    /** Interface functions **/
 
     /** Displays maze onto console.
      * For example (col = 3, row = 5):
@@ -21,7 +25,8 @@ public class ConsoleView implements View {
      * [ ] [ ] [ ] [ ] [ ]
      * [ ] [ ] [ ] [ ] [ ]
      */
-    public void displayView() {
+    @Override
+    public void draw() {
         for (int i = 0; i < maze.getCol(); i++) {
             for (int j = 0; j < maze.getRow(); j++) {
                 System.out.print ("[ " + maze.getBoard()[i][j] + " ] ");
@@ -31,11 +36,9 @@ public class ConsoleView implements View {
         System.out.println();
     }
 
-    /** Interface functions **/
-
     @Override
     public void update() {
         System.out.println("View updated with new model change.");
-        displayView();
+        draw();
     }
 }

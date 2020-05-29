@@ -1,6 +1,6 @@
 import java.util.Scanner;
 
-public class ConsoleController {
+public class MazeController {
     /** Constants **/
     public static final String UP = "U";
     public static final String DOWN = "D";
@@ -10,20 +10,16 @@ public class ConsoleController {
     /** Private member variables **/
     private final Maze maze;
     private final ConsoleView consoleView;
-    private final Scanner scanner;
+    private final StringGetter stringGetter;
 
     /** Constructor for ConsoleController.
      *
      * @param maze = the maze
-     * @param consoleView = the display on the console
      */
-    public ConsoleController (Maze maze, ConsoleView consoleView) {
+    public MazeController(Maze maze) {
         this.maze = maze;
-        this.consoleView = consoleView;
-
-        maze.registerView(consoleView);
-
-        scanner = new Scanner (System.in);
+        consoleView = new ConsoleView(this, maze);
+        stringGetter = new StringGetter();
     }
 
     /** Accessor functions **/
@@ -46,26 +42,37 @@ public class ConsoleController {
 
     /** Additional functions **/
 
+    public void initGame() {
+        maze.initPlayer(0,0);
+        maze.initGoal(maze.getCol() - 1, maze.getRow() - 1);
+
+        while (! maze.getGoalReached()) {
+            readAction();
+        }
+
+    }
+
     /** Reads what the direction the player character should go inside the maze.
      * Player can go either up, down, left, or right.
      *
      */
     public void readAction() {
         System.out.println("Type L to go left, R to go right, U to go up, or D to go down.");
-        String input = scanInput();
+        String input = stringGetter.scanInput();
         if (validateInput(input)) {
             System.out.println("Input is valid.");
             if (isIllegalCollide(input)) {
                 // do nothing
             } else if (isCollideGoal(input)) {
-                // implement later
-                System.out.println("Collided with goal. Will implement this feature later.");
+                maze.setGoalReached(true);
+                updatePlayerPos(input);
+                System.out.println("readAction(): Player found the goal.");
             } else {
                 updatePlayerPos(input);
             }
         } else {
             System.out.println("readAction(): Input is invalid. " +
-            " U to go up, or D to go down, L to go left, R to go right.");
+            "U to go up, or D to go down, L to go left, R to go right.");
         }
 
     }
@@ -82,15 +89,15 @@ public class ConsoleController {
                 validatedInput.equals(LEFT) || validatedInput.equals(RIGHT))) :
                 "isCollideGoal(): Input must be either U, D, L, or R.";
 
-        if (validatedInput == UP) {
+        if (validatedInput.equals(UP)) {
             if(maze.getBoard()[maze.getPlayerY() - 1][maze.getPlayerX()] == Maze.GOAL) {
                 return true;
             }
-        } else if (validatedInput == DOWN) {
+        } else if (validatedInput.equals(DOWN)) {
             if(maze.getBoard()[maze.getPlayerY() + 1][maze.getPlayerX()] == Maze.GOAL) {
                 return true;
             }
-        } else if (validatedInput == LEFT) {
+        } else if (validatedInput.equals(LEFT)) {
             if(maze.getBoard()[maze.getPlayerY()][maze.getPlayerX() - 1] == Maze.GOAL) {
                 return true;
             }
@@ -113,7 +120,7 @@ public class ConsoleController {
                 validatedInput.equals(LEFT) || validatedInput.equals(RIGHT))) :
                 "isIllegalCollide(): Input must be either U, D, L, or R.";
 
-        if (validatedInput == UP) {
+        if (validatedInput.equals(UP)) {
             if (maze.getPlayerY() == 0) {
                 System.out.println("isIllegalCollide(): Player cannot go up.");
                 return true;
@@ -121,7 +128,7 @@ public class ConsoleController {
                 System.out.println("isIllegalCollide(): Wall above player. Cannot move.");
                 return true;
             }
-        } else if (validatedInput == DOWN) {
+        } else if (validatedInput.equals(DOWN)) {
             if(maze.getPlayerY() == maze.getCol() - 1) {
                 System.out.println("isIllegalCollide(): Player cannot go down.");
                 return true;
@@ -129,7 +136,7 @@ public class ConsoleController {
                 System.out.println("isIllegalCollide(): Wall below player. Cannot move.");
                 return true;
             }
-        } else if (validatedInput == LEFT) {
+        } else if (validatedInput.equals(LEFT)) {
             if(maze.getPlayerX() == 0) {
                 System.out.println("isIllegalCollide(): Player cannot go left.");
                 return true;
@@ -147,16 +154,6 @@ public class ConsoleController {
             }
         }
         return false;
-    }
-
-    /** Gets a String input from user.
-     *
-     * @return input = text user inputs
-     */
-    private String scanInput() {
-        System.out.print("Input: ");
-        String input = scanner.nextLine();
-        return input;
     }
 
     /** Updates the player's position.
@@ -178,7 +175,6 @@ public class ConsoleController {
             maze.moveRight();
         }
     }
-
 
     /** Validates whether the String input is OK. Allowed inputs include:
      * "U" for up, "D" for down, "L" for left, and "R" for right.

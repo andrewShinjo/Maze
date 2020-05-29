@@ -20,6 +20,7 @@ public class Maze implements Model {
     private int numPlayers;
 
     private final List<View> views;
+    private boolean goalReached;
 
     /** Constructors **/
 
@@ -42,6 +43,7 @@ public class Maze implements Model {
             }
         }
         views = new ArrayList<View>();
+        goalReached = false;
     }
 
     /** Accessor functions **/
@@ -60,6 +62,14 @@ public class Maze implements Model {
      */
     public int getCol() {
         return col;
+    }
+
+    /** Returns if player reaches the goal.
+     *
+     * @return goalReached = if the player reached the goal
+     */
+    public boolean getGoalReached() {
+        return goalReached;
     }
 
     /**  Returns player's x coordinate.
@@ -84,6 +94,16 @@ public class Maze implements Model {
      */
     public int getRow() {
         return row;
+    }
+
+    /** Mutator functions **/
+
+    /** Updates the value of goalReached.
+     *
+     * @param goalReached = the new value of goalReached
+     */
+    public void setGoalReached(boolean goalReached) {
+        this.goalReached = goalReached;
     }
 
     /** Additional functions **/
