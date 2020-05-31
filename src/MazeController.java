@@ -1,6 +1,4 @@
-import java.util.Scanner;
-
-public class MazeController {
+public class MazeController implements Controller {
     /** Constants **/
     public static final String UP = "U";
     public static final String DOWN = "D";
@@ -8,9 +6,9 @@ public class MazeController {
     public static final String RIGHT = "R";
 
     /** Private member variables **/
-    private final Maze maze;
-    private final ConsoleView consoleView;
-    private final StringGetter stringGetter;
+    private Maze maze;
+    private final MazeView mazeView;
+    private final InputGetter inputGetter;
 
     /** Constructor for ConsoleController.
      *
@@ -18,8 +16,8 @@ public class MazeController {
      */
     public MazeController(Maze maze) {
         this.maze = maze;
-        consoleView = new ConsoleView(this, maze);
-        stringGetter = new StringGetter();
+        mazeView = new MazeView(this, maze);
+        inputGetter = new InputGetter();
     }
 
     /** Accessor functions **/
@@ -28,8 +26,8 @@ public class MazeController {
      *
      * @return consoleView = the console view
      */
-    public ConsoleView getConsoleView() {
-        return consoleView;
+    public MazeView getMazeView() {
+        return mazeView;
     }
 
     /** Return the maze.
@@ -38,43 +36,6 @@ public class MazeController {
      */
     public Maze getMaze() {
         return maze;
-    }
-
-    /** Additional functions **/
-
-    public void initGame() {
-        maze.initPlayer(0,0);
-        maze.initGoal(maze.getCol() - 1, maze.getRow() - 1);
-
-        while (! maze.getGoalReached()) {
-            readAction();
-        }
-
-    }
-
-    /** Reads what the direction the player character should go inside the maze.
-     * Player can go either up, down, left, or right.
-     *
-     */
-    public void readAction() {
-        System.out.println("Type L to go left, R to go right, U to go up, or D to go down.");
-        String input = stringGetter.scanInput();
-        if (validateInput(input)) {
-            System.out.println("Input is valid.");
-            if (isIllegalCollide(input)) {
-                // do nothing
-            } else if (isCollideGoal(input)) {
-                maze.setGoalReached(true);
-                updatePlayerPos(input);
-                System.out.println("readAction(): Player found the goal.");
-            } else {
-                updatePlayerPos(input);
-            }
-        } else {
-            System.out.println("readAction(): Input is invalid. " +
-            "U to go up, or D to go down, L to go left, R to go right.");
-        }
-
     }
 
     /** Helper functions **/
@@ -188,5 +149,42 @@ public class MazeController {
             return false;
         }
         return true;
+    }
+
+    /** Interface functions **/
+
+    @Override
+    public void init() {
+
+        mazeView.draw();
+        while (! maze.getGoalReached()) {
+            readAction();
+        }
+        maze.reset();
+    }
+
+    /** Reads what the direction the player character should go inside the maze.
+     * Player can go either up, down, left, or right.
+     *
+     */
+    @Override
+    public void readAction() {
+        System.out.println("Type L to go left, R to go right, U to go up, or D to go down.");
+        String input = inputGetter.scanInput();
+        if (validateInput(input)) {
+            System.out.println("Input is valid.");
+            if (isIllegalCollide(input)) {
+                // do nothing
+            } else if (isCollideGoal(input)) {
+                maze.setGoalReached(true);
+                updatePlayerPos(input);
+                System.out.println("readAction(): Player found the goal.");
+            } else {
+                updatePlayerPos(input);
+            }
+        } else {
+            System.out.println("readAction(): Input is invalid. " +
+                    "U to go up, or D to go down, L to go left, R to go right.");
+        }
     }
 }

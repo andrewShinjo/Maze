@@ -9,13 +9,15 @@ public class Maze implements Model {
     public static final char GOAL = 'G';
 
     /** Private member variables **/
-    private final char[][] board;
+    private char[][] board;
+    private String name;
     private int col;
     private int row;
 
-    private final char player;
     private int playerY;
     private int playerX;
+    private int initialY;
+    private int initialX;
 
     private int numPlayers;
 
@@ -29,14 +31,14 @@ public class Maze implements Model {
      * @param col = number of columns in maze
      * @param row = number of rows in maze
      */
-    public Maze (int col, int row) {
-        player = 'P';
-
+    public Maze (int col, int row, String name) {
         numPlayers = 0;
 
         this.col = col;
         this.row = row;
+        this.name = name;
         board = new char[col][row];
+
         for (int i = 0; i < col; i++) {
             for (int j = 0; j < row; j++) {
                 board[i][j] = ' ';
@@ -72,6 +74,18 @@ public class Maze implements Model {
         return goalReached;
     }
 
+    /** Returns the initial y coordinate of player's spawn.
+     *
+     * @return y coordinate of player's spawn
+     */
+    public int getInitialY() { return initialY; }
+
+    /** Returns the initial x coordinate of player's spawn.
+     *
+     * @return x coordinate of player's spawn
+     */
+    public int getInitialX() { return initialX; }
+
     /**  Returns player's x coordinate.
      *
      * @return playerX = player's x coordinate
@@ -96,6 +110,12 @@ public class Maze implements Model {
         return row;
     }
 
+    /** Returns the name of maze.
+     *
+     * @return name = name of maze
+     */
+    public String getName() { return name; }
+
     /** Mutator functions **/
 
     /** Updates the value of goalReached.
@@ -106,7 +126,22 @@ public class Maze implements Model {
         this.goalReached = goalReached;
     }
 
+    /** Saves the initial starting position of the player.
+     *
+     * @param y = y coordinate of initial starting position
+     * @param x = x coordinate of initial starting position
+     */
+    public void setInitialPos(int y, int x) {
+        initialY = y;
+        initialX = x;
+    }
+
     /** Additional functions **/
+
+    public void decrementPlayerNum() {
+        assert numPlayers > 0 : "decrementPlayerNum(): Can't have negative players.";
+        numPlayers --;
+    }
 
     /** Initializes goal's location on the board.
      *
@@ -132,7 +167,9 @@ public class Maze implements Model {
 
         if (numPlayers == 0) {
             numPlayers ++;
-            initPiece('P', y, x);
+            initPiece(PLAYER, y, x);
+            initialY = y;
+            initialX = x;
             playerY = y;
             playerX = x;
         } else if (numPlayers == MAX_PLAYERS) {
@@ -147,14 +184,14 @@ public class Maze implements Model {
      * @param x = row wall is on
      */
     public void initWall(int y, int x) {
-        initPiece('W', y, x);
+        initPiece(WALL, y, x);
     }
 
     /** Decrements the player's y position by one.
      *
      */
     public void moveDown() {
-        board[playerY + 1][playerX] = 'P';
+        board[playerY + 1][playerX] = PLAYER;
         board[playerY][playerX] = ' ';
         playerY ++;
         notifyAllViews();
@@ -164,7 +201,7 @@ public class Maze implements Model {
      *
      */
     public void moveLeft() {
-        board[playerY][playerX - 1] = 'P';
+        board[playerY][playerX - 1] = PLAYER;
         board[playerY][playerX] = ' ';
         playerX --;
         notifyAllViews();
@@ -174,7 +211,7 @@ public class Maze implements Model {
      *
      */
     public void moveRight() {
-        board[playerY][playerX + 1] = 'P';
+        board[playerY][playerX + 1] = PLAYER;
         board[playerY][playerX] = ' ';
         playerX ++;
         notifyAllViews();
@@ -184,11 +221,21 @@ public class Maze implements Model {
      *
      */
     public void moveUp() {
-        board[playerY - 1][playerX] = 'P';
+        board[playerY - 1][playerX] = PLAYER;
         board[playerY][playerX] = ' ';
         playerY --;
         notifyAllViews();
     }
+
+    public void reset() {
+        this.setGoalReached(false);
+        board[playerY][playerX] = GOAL;
+        board[initialY][initialX] = PLAYER;
+        playerY = initialY;
+        playerX = initialX;
+    }
+
+
 
     /** Helper functions **/
 
@@ -212,7 +259,6 @@ public class Maze implements Model {
 
     @Override
     public void notifyAllViews() {
-        System.out.println("Notifying all views of changes");
         for(View view : views) {
             view.update();
         }
@@ -220,13 +266,11 @@ public class Maze implements Model {
 
     @Override
     public void registerView(View view) {
-        System.out.println("registerView() successful");
         views.add(view);
     }
 
     @Override
     public void removeView(View view) {
-        System.out.println("removeView() successful.");
         views.remove(view);
     }
 }

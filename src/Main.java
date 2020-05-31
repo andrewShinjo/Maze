@@ -1,7 +1,6 @@
 public class Main {
     public static void main(String[] argc) {
-        new ExecWithConsole();
-
+        ExecWithConsole exec = new ExecWithConsole();
     }
 
 
@@ -128,7 +127,9 @@ public class Main {
      * 5/28/20
      * [DONE] Make code run until player reaches the goal
      * [DONE] Add a menu in console
-     * Create map editor
-     * Create map selection menu
+     * 5/31/20
+     * [DONE] Create map editor
+     * [DONE] Create map selection menu
+     * [DONE] Reset maze after completing it
      */
 }

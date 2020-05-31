@@ -1,12 +1,12 @@
 import java.util.Scanner;
 
-public class StringGetter {
+public class InputGetter {
     /** Private member variables **/
     private Scanner scanner;
 
     /** Constructors **/
 
-    public StringGetter() {
+    public InputGetter() {
         scanner = new Scanner(System.in);
     }
 

@@ -1,6 +1,6 @@
 public class ExecWithConsole {
     /** Private member variables **/
-    private StringGetter stringGetter;
+    private InputGetter inputGetter;
 
     /** Constructors **/
 
@@ -11,7 +11,7 @@ public class ExecWithConsole {
     public ExecWithConsole() {
         Menu menu = ExecWithConsole.getMenu();
         Invoker invoker;
-        stringGetter = new StringGetter();
+        inputGetter = new InputGetter();
         String input;
 
         do {
@@ -19,7 +19,7 @@ public class ExecWithConsole {
             System.out.println("(E)dit maze");
             System.out.println("(R)un maze");
             System.out.println("-1 to exit");
-            input = stringGetter.scanInput();
+            input = inputGetter.scanInput();
             switch (input) {
                 case "P":
                    PlayCommand play = new PlayCommand(menu);

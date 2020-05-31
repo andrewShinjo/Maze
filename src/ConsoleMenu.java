@@ -1,19 +1,33 @@
-import java.util.Scanner;
-
 public class ConsoleMenu implements Menu {
+    private Maze maze;
+    private MazeList mazeList;
+    private Controller controller;
+    private MazeListController mazeListController;
+
+
+    public ConsoleMenu() {
+        mazeList = new MazeList();
+        mazeListController = new MazeListController(mazeList);
+    }
 
     /** Interface functions **/
 
     @Override
     public void edit() {
-        System.out.println("Edit called.");
+        mazeListController.selectEdit();
+        maze = mazeListController.getMazeList().getActiveMaze();
+        controller = new EditController(maze);
+        controller.init();
+
     }
 
     @Override
     public void play() {
-        Maze maze = new Maze(10, 10);
-        MazeController mc = new MazeController(maze);
-        mc.initGame();
+        mazeListController.getConsoleUI().displayInfo();
+        mazeListController.selectPlay();
+        maze = mazeListController.getMazeList().getActiveMaze();
+        controller = new MazeController(maze);
+        controller.init();
     }
 
     @Override

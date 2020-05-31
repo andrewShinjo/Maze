@@ -1,5 +1,8 @@
 public interface View {
 
+
+    public void displayInfo();
+
     /** Draws the view.
      *
      */
