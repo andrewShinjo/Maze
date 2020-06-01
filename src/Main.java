@@ -131,5 +131,6 @@ public class Main {
      * [DONE] Create map editor
      * [DONE] Create map selection menu
      * [DONE] Reset maze after completing it
+     * Clean up code a bit
      */
 }

@@ -4,8 +4,10 @@ public class EditCommand implements Command {
 
     /** Constructors **/
 
-    /** Constructor for MenuSelectOption.
+
+    /** Constructor for EditCommand.
      *
+     * @param menu = the menu the edit command will be in
      */
     public EditCommand(Menu menu) {
         this.menu = menu;
@@ -14,6 +16,9 @@ public class EditCommand implements Command {
 
     /** Interface functions **/
 
+    /** Executes the edit command.
+     *
+     */
     @Override
     public void execute() {
         menu.edit();

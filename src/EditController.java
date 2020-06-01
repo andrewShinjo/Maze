@@ -11,7 +11,8 @@ public class EditController implements Controller {
     private AddGoalState addGoalState;
     private AddWallState addWallState;
 
-    /** Constructor for EditController.
+    /** Constructor for EditController. Creates a MazeView using the maze
+     * as well as the AddPlayerState, AddGoalState, and the AddWallState.
      *
      * @param maze = the maze
      */
@@ -63,6 +64,9 @@ public class EditController implements Controller {
         readAction();
     }
 
+    /** Reads what piece to put and where.
+     *
+     */
     @Override
     public void readAction() {
         String input = "";

@@ -13,6 +13,12 @@ public class AddGoalState implements State {
     }
 
     /** Interface functions **/
+
+    /** Adds a goal piece onto the maze at the given column and row.
+     *
+     * @param col = column to put goal piece
+     * @param row = row to put goal piece
+     */
     @Override
     public void addPiece(int col, int row) {
         editController.getMaze().initGoal(col, row);

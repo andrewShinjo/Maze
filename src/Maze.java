@@ -227,15 +227,28 @@ public class Maze implements Model {
         notifyAllViews();
     }
 
+    /** Resets the maze to its default state.
+     * The player and the goal both respawn, and
+     * the other locations that were visited by
+     * one of the search algorithms are marked as
+     * unvisited.
+     *
+     */
     public void reset() {
-        this.setGoalReached(false);
+        goalReached = false;
         board[playerY][playerX] = GOAL;
         board[initialY][initialX] = PLAYER;
         playerY = initialY;
         playerX = initialX;
+
+        for(int i = 0; i < col; i++) {
+            for(int j = 0; j < row; j++) {
+                if (board[i][j] == 'V') {
+                    board[i][j] = ' ';
+                }
+            }
+        }
     }
-
-
 
     /** Helper functions **/
 

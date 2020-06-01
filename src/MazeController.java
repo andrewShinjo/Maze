@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class MazeController implements Controller {
     /** Constants **/
     public static final String UP = "U";
@@ -8,7 +10,7 @@ public class MazeController implements Controller {
     /** Private member variables **/
     private Maze maze;
     private final MazeView mazeView;
-    private final InputGetter inputGetter;
+    private final Scanner scanner;
 
     /** Constructor for ConsoleController.
      *
@@ -17,7 +19,7 @@ public class MazeController implements Controller {
     public MazeController(Maze maze) {
         this.maze = maze;
         mazeView = new MazeView(this, maze);
-        inputGetter = new InputGetter();
+        scanner = new Scanner(System.in);
     }
 
     /** Accessor functions **/
@@ -170,7 +172,7 @@ public class MazeController implements Controller {
     @Override
     public void readAction() {
         System.out.println("Type L to go left, R to go right, U to go up, or D to go down.");
-        String input = inputGetter.scanInput();
+        String input = scanner.nextLine();
         if (validateInput(input)) {
             System.out.println("Input is valid.");
             if (isIllegalCollide(input)) {
